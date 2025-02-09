@@ -8,7 +8,7 @@ class ExercisesController < ApplicationController
   def exercise2
     # 【要件】注文されていない料理を提供しているすべてのお店を返すこと
     #   * left_outer_joinsを使うこと
-    @shops = Shop.left_outer_joins(foods: :order_foods).where(order_foods: {id: nil})
+    @shops = Shop.left_outer_joins(foods: :order_foods).distinct.where(order_foods: {id: nil})
   end
 
   def exercise3 
@@ -22,6 +22,6 @@ class ExercisesController < ApplicationController
     # 【要件】一番お金を使っている顧客を返すこと
     #   * joinsを使うこと
     #   * 取得したCustomerのインスタンスにfoods_price_sumと呼びかけると合計金額を返すこと
-    @customer = Customer.joins(orders: {order_foods: :foods}).select("customers.*, SUM(foods.price) AS foods_price_sum").group("customers.id").order("foods_price_sum DESC").first
+    @customer = Customer.joins(orders: :foods).select("customers.*, SUM(foods.price) AS foods_price_sum").group("customers.id").order("foods_price_sum DESC").first
   end
 end
